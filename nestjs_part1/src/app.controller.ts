@@ -41,8 +41,9 @@ export class AppController {
   getMovie(@Param('id') id: string) {
     const movie = this.movies.find((movie) => movie.id === +id);
 
-    if (!movie)
+    if (!movie) {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
+    }
 
     return movie;
   }
@@ -60,11 +61,16 @@ export class AppController {
   }
 
   @Patch(':id')
-  patchMovie() {
-    return {
-      id: 3,
-      title: '어벤져스',
-    };
+  patchMovie(@Param('id') id: string, @Body('title') title: string) {
+    const movie = this.movies.find((movie) => movie.id === +id);
+
+    if (!movie) {
+      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
+    }
+
+    Object.assign(movie, { title });
+
+    return movie;
   }
 
   @Delete(':id')
