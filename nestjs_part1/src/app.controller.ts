@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -27,6 +28,8 @@ export class AppController {
     },
   ];
 
+  private idCounter = 3;
+
   constructor(private readonly appService: AppService) {}
 
   @Get()
@@ -45,11 +48,15 @@ export class AppController {
   }
 
   @Post()
-  postMovie() {
-    return {
-      id: 3,
-      title: '어벤져스',
+  postMovie(@Body('title') title: string) {
+    const movie: Movie = {
+      id: this.idCounter++,
+      title,
     };
+
+    this.movies.push(movie);
+
+    return movie;
   }
 
   @Patch(':id')
