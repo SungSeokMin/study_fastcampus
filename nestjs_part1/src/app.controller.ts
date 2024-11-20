@@ -1,4 +1,12 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 
 interface Movie {
@@ -27,11 +35,13 @@ export class AppController {
   }
 
   @Get(':id')
-  getMovie() {
-    return {
-      id: 1,
-      title: '해리포터',
-    };
+  getMovie(@Param('id') id: string) {
+    const movie = this.movies.find((movie) => movie.id === +id);
+
+    if (!movie)
+      throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
+
+    return movie;
   }
 
   @Post()
