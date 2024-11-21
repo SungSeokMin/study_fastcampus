@@ -19,3 +19,7 @@ nest g resource
 
 - Controller: 들어오는 요청에 대한 쿼리, 바디, 파라미터 체크, 타입 체크 등을 확인하는 역할을 합니다.
 - Service: 실제 요청의 로직을 실행합니다.
+
+## Class Validator
+
+![class validator](https://github.com/user-attachments/assets/46d5341c-8c1d-49b4-afeb-903b217b3f50)
