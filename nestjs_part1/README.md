@@ -26,7 +26,7 @@ nest g resource
 
 ### 공통 Validator
 
-```js
+```ts
 // !== null || !== undefined
 @IsDefined()
 
@@ -50,4 +50,37 @@ nest g resource
 
 // value is not in an array
 @IsNotIn(values: any[])
+```
+
+## 타입 Validator
+
+```ts
+// value is a boolean
+@IsBoolean()
+
+// value is a string
+@IsString()
+
+// value is a number
+@IsNumber()
+
+// value is an integer number
+@IsInt()
+
+// value is an array
+@IsArray()
+
+// value is a valid enum
+enum MovieGenre {
+  Fantasy = 'fantasy',
+  Action = 'action',
+}
+
+@IsEnum(MovieGenre)
+
+// value is a date.
+@IsDate()
+
+// value is a date string.
+@IsDateString()
 ```
