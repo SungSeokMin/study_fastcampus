@@ -103,3 +103,31 @@ enum MovieGenre {
 // 최댓값
 @Max(num: number)
 ```
+
+## 문자 Validator
+
+```ts
+// seed가 포함된 문자열
+@Contains(seed: string)
+
+// seed가 포함되지 않는 문자열
+@NotContains(seed: string)
+
+// 알파벳 + 숫자
+@IsAlphanumeric()
+
+// Hex Color
+@IsHexColor()
+
+// 최대 길이
+@MaxLength(num: number)
+
+// 최소 길이
+@MinLength(num: number)
+
+// uuid
+@IsUUID()
+
+// 위도 & 경도
+@IsLatLong()
+```
