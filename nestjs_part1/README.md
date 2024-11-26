@@ -131,3 +131,38 @@ enum MovieGenre {
 // 위도 & 경도
 @IsLatLong()
 ```
+
+### Custom Validator
+
+```ts
+@ValidatorConstraint()
+export class PasswordValidator implements ValidatorConstraintInterface {
+  validate(value: any): Promise<boolean> | boolean {
+    // 비밀번호 길이는 4-8
+    return value.length > 4 && value.length < 8;
+  }
+
+  defaultMessage(): string {
+    return '비밀번호의 길이는 4~8자 여야합니다.';
+  }
+}
+
+// 방법 1
+@Validate(PasswordValidator)
+password: string;
+
+// 방법 2
+function IsPasswordValid(validationOptions?: ValidationOptions) {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      validator: PasswordValidator,
+    });
+  };
+}
+
+@IsPasswordValid()
+password: string;
+```
