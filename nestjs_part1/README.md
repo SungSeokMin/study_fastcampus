@@ -84,3 +84,22 @@ enum MovieGenre {
 // value is a date string.
 @IsDateString()
 ```
+
+## 숫자 Validator
+
+```ts
+// 값이 다른 숫자로 나누어 떨어지는 숫자
+@IsDivisibleBy(num: number)
+
+// 양수
+@IsPositive()
+
+// 음수
+@IsNegative()
+
+// 최솟값
+@Min(num: number)
+
+// 최댓값
+@Max(num: number)
+```
