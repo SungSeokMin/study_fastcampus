@@ -23,3 +23,31 @@ nest g resource
 ## Class Validator
 
 ![class validator](https://github.com/user-attachments/assets/46d5341c-8c1d-49b4-afeb-903b217b3f50)
+
+### 공통 Validator
+
+```js
+// !== null || !== undefined
+@IsDefined()
+
+// === null, === undefined
+@IsOptional()
+
+// ===
+@Equals(comparison: any)
+
+// !==
+@NotEquals(comparison: any)
+
+// === '', === null, === undefined
+@IsEmpty()
+
+// !== '', !== null, !== undefined
+@IsNotEmpty()
+
+// value is in an array
+@IsIn(values: any[])
+
+// value is not in an array
+@IsNotIn(values: any[])
+```
