@@ -166,3 +166,68 @@ function IsPasswordValid(validationOptions?: ValidationOptions) {
 @IsPasswordValid()
 password: string;
 ```
+
+## DataBase 연결 후 테이블 생성
+
+TypeORM을 이용해서 PostgreSQL과 연결할 수 있습니다.
+
+- TypeOrmModule.forRootAsync함수를 호출하는 이유는 ConfigModule이 IoC에 등록된 후 TypeOrmModule에 환경변수를 injection 하기 위함입니다.
+
+```ts
+// movie.entity.ts
+@Entity()
+export class Movie {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  title: string;
+
+  @Column()
+  genre: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @VersionColumn()
+  version: number;
+}
+
+// app.module.ts
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        ENV: Joi.string().valid('dev', 'prod').required(),
+        DB_TYPE: Joi.string().valid('postgres').required(),
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.number().required(),
+        DB_USERNAME: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_DATABASE: Joi.string().required(),
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: configService.get<string>('DB_TYPE') as 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        entities: [Movie],
+        synchronize: true,
+      }),
+      inject: [ConfigService],
+    }),
+
+    MovieModule,
+  ],
+  controllers: [],
+  providers: [],
+})
+```
