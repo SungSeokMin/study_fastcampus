@@ -231,3 +231,137 @@ export class Movie {
   providers: [],
 })
 ```
+
+## Repository CRUD
+
+### Create & Delete 관련
+
+create()
+
+- 객체를 생성하는 역할을 합니다.
+- 단, 데이터베이스에 데이터를 생성하지 않고 "객체"를 생성만 합니다.
+
+```ts
+const user = repository.create({
+  id: 1,
+  firstName: 'Timber',
+  lastName: 'Saw',
+});
+```
+
+save()
+
+- 데이터베이스에 저장됩니다.
+- 만약에 이미 Row가 존재한다면(primary key 값으로 구분) 업데이트 합니다.
+
+```ts
+await repository.save();
+```
+
+upsert()
+
+- update와 insert를 합친 기능입니다.
+- 데이터 생성 시도를 한 후 만약에 이미 존재하는 데이터라면 업데이트를 진행합니다.
+- save()와 다르게 하나의 transaction에서 작업이 실행됩니다.
+
+```ts
+await repository.upsert(
+  [
+    { externalId: 'abc123', firstName: 'Sung' },
+    { externalId: 'def456', firstName: 'Kim' },
+  ],
+  ['externalId'],
+);
+```
+
+delete()
+
+- Row를 삭제할때 사용됩니다.
+- 대체적으로 Primary Key를 사용해서 삭제합니다.
+
+```ts
+await repository.delete(1);
+await repository.delete([1, 2, 3]);
+await repository.delete({ firstName: 'Sung' });
+```
+
+softDelete() & restore()
+
+- softDelete()는 비영구적으로 삭제합니다.
+- restore()는 sortDelete() 했던 Row를 복구할 수 있습니다.
+
+```ts
+// 샥제
+await repository.softDelete(1);
+
+// 복구
+await repository.restore(1);
+```
+
+### Update 관련
+
+update()
+
+- 첫번째 파라미터에 검색 조건을 입력해줍니다.
+- 두번째 파리미터에 변경 필드를 입력해줍니다.
+
+```ts
+await repository.update({ age: 20 }, { category: 'ADULT' });
+```
+
+### Find 관련
+
+find() & findOne() & findAndCount()
+
+- find(): 해당되는 Row를 모두 반환합니다.
+- findOne(): 해당되는 첫번째 Row를 반환합니다. 없을경우 null을 반환합니다.
+- findAndCount(): 해당되는 Row와 전체 갯수를 반환합니다.
+
+```ts
+const rows = await repository.find({
+  where: {
+    firstName: 'Sung',
+  },
+});
+
+const rows = await repository.findOne({
+  where: {
+    firstName: 'Sung',
+  },
+});
+
+const [rows, count] = await repository.findAndCount({
+  where: {
+    firstName: 'Sung',
+  },
+});
+```
+
+exists()
+
+- 특정 조건의 Row가 존재하는지 Boolean 값을 반환 받을 수 있습니다.
+
+```ts
+const exists = await repository.exists({
+  where: {
+    firstName: 'Sung',
+  },
+});
+```
+
+preload()
+
+- 데이터베이스에 저장된 값을 Primary Key 기준으로 불러오고 입력된 객체의 값으로 프로퍼티를 덮어씁니다.
+- 덮어쓰는 과정에서 데이터베이스에 업데이트 요청이 보내지지는 않습니다.
+
+```ts
+const partialUser = {
+  id: 1,
+  firstName: 'Sung',
+  profile: {
+    id: 1,
+  },
+};
+
+const user = await repository.preload(partialUser);
+```
