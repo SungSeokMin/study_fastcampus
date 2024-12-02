@@ -4,7 +4,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 
 import { Movie } from './entity/movie.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class MovieService {
@@ -13,13 +13,14 @@ export class MovieService {
     private readonly movieRepository: Repository<Movie>,
   ) {}
 
-  getManyMovies(title?: string) {
-    return this.movieRepository.find();
-    // if (!title) {
-    //   return this.movies;
-    // }
+  async getManyMovies(title?: string) {
+    if (!title) {
+      return this.movieRepository.findAndCount();
+    }
 
-    // return this.movies.filter((movie) => movie.title.startsWith(title));
+    return await this.movieRepository.findAndCount({
+      where: { title: Like(`%${title}%`) },
+    });
   }
 
   async getMovieById(id: number) {
