@@ -13,13 +13,7 @@ export class DirectorService {
   ) {}
 
   async findAll() {
-    const directors = await this.directorRepository.find();
-
-    if (!directors) {
-      throw new NotFoundException('');
-    }
-
-    return directors;
+    return await this.directorRepository.find();
   }
 
   findOne(id: number) {
