@@ -23,18 +23,19 @@ export class MovieService {
 
   async findAll(title?: string) {
     if (!title) {
-      return this.movieRepository.findAndCount();
+      return this.movieRepository.findAndCount({ relations: ['director'] });
     }
 
     return await this.movieRepository.findAndCount({
       where: { title: Like(`%${title}%`) },
+      relations: ['director'],
     });
   }
 
   async findOne(id: number) {
     const movie = this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['detail', 'director'],
     });
 
     if (!movie) {
