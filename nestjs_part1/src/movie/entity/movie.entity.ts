@@ -25,8 +25,9 @@ export class Movie extends BaseTable {
   @Column({ unique: true })
   title: string;
 
-  @Column()
-  genre: string;
+  @ManyToMany(() => Genre, (genre) => genre.movies)
+  @JoinTable()
+  genres: Genre[];
 
   @OneToOne(() => MovieDetail, (movieDetail) => movieDetail.id, {
     cascade: true,
@@ -40,8 +41,4 @@ export class Movie extends BaseTable {
     nullable: false,
   })
   director: Director;
-
-  @ManyToMany(() => Genre, (genre) => genre.movies)
-  @JoinTable()
-  genres: Genre[];
 }

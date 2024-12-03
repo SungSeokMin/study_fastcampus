@@ -10,9 +10,6 @@ export class Genre extends BaseTable {
   @Column({ unique: true })
   name: string;
 
-  @ManyToMany(() => Movie, (movie) => movie.genres, {
-    cascade: true,
-    nullable: false,
-  })
+  @ManyToMany(() => Movie, (movie) => movie.genres)
   movies: Movie[];
 }
