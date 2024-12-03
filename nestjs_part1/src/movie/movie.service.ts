@@ -29,7 +29,10 @@ export class MovieService {
   }
 
   async getMovieById(id: number) {
-    const movie = this.movieRepository.findOne({ where: { id } });
+    const movie = this.movieRepository.findOne({
+      where: { id },
+      relations: ['detail'],
+    });
 
     if (!movie) {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
