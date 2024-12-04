@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { In, Like, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -25,23 +25,26 @@ export class MovieService {
   ) {}
 
   async findAll(title?: string) {
-    if (!title) {
-      return this.movieRepository.findAndCount({
-        relations: ['director', 'genres'],
-      });
+    const qb = this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.director', 'director')
+      .leftJoinAndSelect('movie.genres', 'genres');
+
+    if (title) {
+      qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    return await this.movieRepository.findAndCount({
-      where: { title: Like(`%${title}%`) },
-      relations: ['director', 'genres'],
-    });
+    return await qb.getManyAndCount();
   }
 
   async findOne(id: number) {
-    const movie = this.movieRepository.findOne({
-      where: { id },
-      relations: ['detail', 'director'],
-    });
+    const movie = await this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.detail', 'detail')
+      .leftJoinAndSelect('movie.genres', 'genres')
+      .leftJoinAndSelect('movie.director', 'director')
+      .where('movie.id = :id', { id })
+      .getOne();
 
     if (!movie) {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.');
@@ -84,7 +87,7 @@ export class MovieService {
   async update(id: number, updateMovieDto: UpdateMovieDto) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail'],
+      relations: ['detail', 'genres'],
     });
 
     if (!movie) {
@@ -128,23 +131,32 @@ export class MovieService {
       ...(newDirector && { director: newDirector }),
     };
 
-    await this.movieRepository.update({ id }, movieUpdateFields);
+    await this.movieRepository
+      .createQueryBuilder()
+      .update(Movie)
+      .set(movieUpdateFields)
+      .where('id = :id', { id })
+      .execute();
 
     if (detail) {
-      await this.movieDetailRepository.update(
-        { id: movie.detail.id },
-        { detail },
-      );
+      await this.movieDetailRepository
+        .createQueryBuilder()
+        .update(MovieDetail)
+        .set({ detail })
+        .where('id = :id', { id: movie.detail.id })
+        .execute();
     }
 
-    const newMovie = await this.movieRepository.findOne({
-      where: { id },
-      relations: ['detail', 'director'],
-    });
-
-    newMovie.genres = newGenres;
-
-    await this.movieRepository.save(newMovie);
+    if (newGenres) {
+      await this.movieRepository
+        .createQueryBuilder()
+        .relation(Movie, 'genres')
+        .of(id)
+        .addAndRemove(
+          newGenres.map((newGenre) => newGenre.id),
+          movie.genres.map((genre) => genre.id),
+        );
+    }
 
     return this.movieRepository.findOne({
       where: { id },
