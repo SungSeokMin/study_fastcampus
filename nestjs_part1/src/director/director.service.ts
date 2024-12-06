@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Injectable,
+  NotFoundException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateDirectorDto } from './dto/create-director.dto';
 import { UpdateDirectorDto } from './dto/update-director.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +11,7 @@ import { Director } from './entity/director.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
+@UseInterceptors(ClassSerializerInterceptor)
 export class DirectorService {
   constructor(
     @InjectRepository(Director)

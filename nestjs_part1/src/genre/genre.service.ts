@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Injectable,
+  NotFoundException,
+  UseInterceptors,
+} from '@nestjs/common';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +11,7 @@ import { Genre } from './entitiy/genre.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
+@UseInterceptors(ClassSerializerInterceptor)
 export class GenreService {
   constructor(
     @InjectRepository(Genre)
