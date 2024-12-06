@@ -7,6 +7,8 @@
 
 ![NestJS 라이플 사이클](https://github.com/user-attachments/assets/d485ebfc-bbdf-49b0-a2ae-6884a744dbd4)
 
+![NestJS 세부 라이프 사이클](https://github.com/user-attachments/assets/447ce39f-626d-48c2-b5c2-96ef4c2cc5b1)
+
 ## Module
 
 NestJS CLI를 통해서 Module을 자동생성 할 수 있습니다.
@@ -365,3 +367,7 @@ const partialUser = {
 
 const user = await repository.preload(partialUser);
 ```
+
+## Pipe
+
+![Pipe](https://github.com/user-attachments/assets/64311228-27d0-48fc-8342-d09fe6c66e49)
