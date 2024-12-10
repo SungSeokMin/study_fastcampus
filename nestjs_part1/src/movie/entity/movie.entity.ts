@@ -11,7 +11,7 @@ import {
 import { BaseTable } from '../../common/entity/base-table.entity';
 import { MovieDetail } from './movie-detail.entity';
 import { Director } from 'src/director/entity/director.entity';
-import { Genre } from 'src/genre/entitiy/genre.entity';
+import { Genre } from 'src/genre/entity/genre.entity';
 
 // ManyToOne [Director] -> 감독은 여러개의 영화를 만들 수 있음
 // OneToOne [MovieDetail] -> 영화는 하나의 상세 내용을 갖을 수 있음

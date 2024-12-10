@@ -7,7 +7,7 @@ import {
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Genre } from './entitiy/genre.entity';
+import { Genre } from './entity/genre.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
