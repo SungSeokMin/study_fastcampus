@@ -25,6 +25,15 @@ export class AuthController {
     return this.authService.login(token);
   }
 
+  @Post('token/access')
+  async rotateAccessToken(@Headers('authorization') refreshToken: string) {
+    const payload = await this.authService.parseBearerToken(refreshToken, true);
+
+    return {
+      accessToken: await this.authService.issueToken(payload, false),
+    };
+  }
+
   @UseGuards(LocalAuthGuard)
   @Post('login/passport')
   async loginUserPassport(@Request() req) {
