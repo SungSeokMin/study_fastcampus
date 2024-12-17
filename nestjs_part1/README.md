@@ -368,10 +368,14 @@ const partialUser = {
 const user = await repository.preload(partialUser);
 ```
 
-## Pipe
-
-![Pipe](https://github.com/user-attachments/assets/64311228-27d0-48fc-8342-d09fe6c66e49)
-
 ## Middleware
 
 ![Middleware](https://github.com/user-attachments/assets/22c89d93-ea09-4001-941c-62280682e290)
+
+## Guard
+
+![Guard](https://github.com/user-attachments/assets/70740e7e-b45c-49bd-8aea-3d413c6c855a)
+
+## Pipe
+
+![Pipe](https://github.com/user-attachments/assets/64311228-27d0-48fc-8342-d09fe6c66e49)
