@@ -18,10 +18,6 @@ export class MovieService {
     private readonly movieRepository: Repository<Movie>,
     @InjectRepository(MovieDetail)
     private readonly movieDetailRepository: Repository<MovieDetail>,
-    @InjectRepository(Director)
-    private readonly directorRepository: Repository<Director>,
-    @InjectRepository(Genre)
-    private readonly gerneRepository: Repository<Genre>,
     private readonly dataSource: DataSource,
   ) {}
 
