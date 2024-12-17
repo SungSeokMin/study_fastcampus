@@ -20,4 +20,4 @@ export const envVariablesKeys = {
   hashRounds,
   accessTokenSecret,
   refreshTokenSecret,
-};
+} as const;
