@@ -11,16 +11,19 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard } from './strategy/jwt.strategy';
 import { headerVariablesKeys } from 'src/common/const/header.const';
+import { Public } from './decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('register')
   registerUser(@Headers(headerVariablesKeys.authorization) basicToken: string) {
     return this.authService.register(basicToken);
   }
 
+  @Public()
   @Post('login')
   loginUser(@Headers(headerVariablesKeys.authorization) basicToken: string) {
     return this.authService.login(basicToken);
