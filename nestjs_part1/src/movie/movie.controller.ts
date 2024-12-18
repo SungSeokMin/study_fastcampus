@@ -45,10 +45,7 @@ export class MovieController {
 
   @Patch(':id')
   @RBAC(Role.admin)
-  patchMovie(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateMovieDto,
-  ) {
+  patchMovie(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMovieDto) {
     return this.movieService.update(id, body);
   }
 
