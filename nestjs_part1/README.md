@@ -379,3 +379,89 @@ const user = await repository.preload(partialUser);
 ## Pipe
 
 ![Pipe](https://github.com/user-attachments/assets/64311228-27d0-48fc-8342-d09fe6c66e49)
+
+## Pagination
+
+- 데이터 분할: 큰 분량의 데이터를 분할해서 다루기 쉽게 부분적으로 불러 올 수 있습니다.
+- 네비게이션 컨트롤: 다음 페이지, 이전 페이지등 기능을 통해 쉽게 페이지 이동이 가능합니다.
+- 균일한 데이터 규격: 요청과 응답이 균일한 규격으로 제공되어 예측하기 쉽습니다.
+- 상태 유지: Pagination 요청 자체에 상태 정보가 존재합니다.
+- 퍼포먼스 최적화: 한번에 필요한 분량의 데이터만 불러오기 때문에 퍼포먼스 최적화가 가능합니다.
+
+![pagination](https://github.com/user-attachments/assets/c1dc8e6d-9036-4d53-bc8b-47f779e091a8)
+
+### Page Based Pagination
+
+[Basic](https://github.com/SungSeokMin/study_fastcampus/commit/8912b5cab9b4df916347bd92e5199aade8a5373b?diff=split&w=1)
+
+### Cursor Based Pagination
+
+[Basic](https://github.com/SungSeokMin/study_fastcampus/commit/bf562667b918bcc221f6dc41cfd4c5c780a4be69?diff=split)
+
+[Multi Column](https://github.com/SungSeokMin/study_fastcampus/commit/e4bc1d9be844b9b763b4ea16348a3d1283ea4771?diff=split)
+
+### SQL 다중 칼럼
+
+```sql
+-- Page Pagination 기반 SQL
+-- Page 1
+SELECT id, title, "likeCount"
+FROM movie
+ORDER BY id DESC
+LIMIT 5;
+
+-- Page 2
+SELECT id, title, "likeCount"
+FROM movie
+ORDER BY id DESC
+LIMIT 5
+OFFSET 5;
+
+-- Page + likeCount 기반 SQL
+SELECT id, title, "likeCount"
+FROM movie
+ORDER BY "likeCount" DESC, id DESC
+LIMIT 5;
+
+SELECT id, title, "likeCount"
+FROM movie
+ORDER BY "likeCount" DESC, id DESC
+LIMIT 5
+OFFSET 5;
+
+-- Cursor Pagination 기반 SQL
+-- id <= 300
+SELECT id, title, "likeCount"
+FROM movie
+WHERE id <= 300
+ORDER BY id DESC
+LIMIT 5;
+
+-- id < 296
+SELECT id, title, "likeCount"
+FROM movie
+WHERE id < 296
+ORDER BY id DESC
+LIMIT 5;
+
+-- Cursor + likeCount 기반 SQL
+SELECT id, title, "likeCount"
+FROM movie
+ORDER BY "likeCount" DESC, id DESC
+LIMIT 5;
+
+-- likeCount가 20이하 이면서 id가 35보다 작은 경우
+SELECT id, title, "likeCount"
+FROM movie
+WHERE ("likeCount" < 20)
+ OR ("likeCount" = 20 AND id < 35)
+ORDER BY "likeCount" DESC, id DESC
+LIMIT 5;
+
+-- MySql, PostgresSql에서는 다음과 같이 줄일 수 있다.
+SELECT id, title, "likeCount"
+FROM movie
+WHERE (id, "likeCount") < (35, 20)
+ORDER BY "likeCount" DESC, id DESC
+LIMIT 5;
+```
