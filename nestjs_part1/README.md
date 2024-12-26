@@ -384,6 +384,10 @@ const user = await repository.preload(partialUser);
 
 ![Pipe](https://github.com/user-attachments/assets/64311228-27d0-48fc-8342-d09fe6c66e49)
 
+## Exception Filter
+
+![Exception Filter](https://github.com/user-attachments/assets/8e6adc97-29e2-434e-97bd-bb771a794c40)
+
 ## Pagination
 
 - 데이터 분할: 큰 분량의 데이터를 분할해서 다루기 쉽게 부분적으로 불러 올 수 있습니다.
