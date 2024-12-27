@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Movie } from './app.controller';
+import { Movie } from './movie.controller';
 
 @Injectable()
-export class AppService {
+export class MovieService {
   private movies: Movie[] = [
     {
       id: 1,
