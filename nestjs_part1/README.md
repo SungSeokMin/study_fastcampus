@@ -24,6 +24,8 @@ nest g resource
 
 ## Class Validator
 
+`개발자가 원하는 타입, 유형이 맞는지 검증은 해주지만 변환은 해주지 않습니다.`
+
 ![class validator](https://github.com/user-attachments/assets/46d5341c-8c1d-49b4-afeb-903b217b3f50)
 
 ### 공통 Validator
@@ -54,7 +56,7 @@ nest g resource
 @IsNotIn(values: any[])
 ```
 
-## 타입 Validator
+### 타입 Validator
 
 ```ts
 // value is a boolean
@@ -87,7 +89,7 @@ enum MovieGenre {
 @IsDateString()
 ```
 
-## 숫자 Validator
+### 숫자 Validator
 
 ```ts
 // 값이 다른 숫자로 나누어 떨어지는 숫자
@@ -106,7 +108,7 @@ enum MovieGenre {
 @Max(num: number)
 ```
 
-## 문자 Validator
+### 문자 Validator
 
 ```ts
 // seed가 포함된 문자열
@@ -167,6 +169,20 @@ function IsPasswordValid(validationOptions?: ValidationOptions) {
 
 @IsPasswordValid()
 password: string;
+```
+
+## Class Transformer
+
+`개발자가 원하는 타입, 유형이 맞는지 검증을 하지는 않지만 변환은 해줍니다.`
+
+```ts
+class User {
+  @Exclude()
+  name: string;
+
+  @Transform(({ value }) => value.toLowerCase())
+  email: string;
+}
 ```
 
 ## DataBase 연결 후 테이블 생성
