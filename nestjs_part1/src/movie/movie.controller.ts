@@ -16,6 +16,8 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { MovieTitleValidationPipe } from './pipe/movie-title-validation.pipe';
 import { Public } from 'src/auth/decorator/public.decorator';
+import { RBAC } from 'src/auth/decorator/rbac.decorator';
+import { Role } from 'src/user/entity/user.entity';
 
 @Controller('movie')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -35,16 +37,19 @@ export class MovieController {
   }
 
   @Post()
+  @RBAC(Role.admin)
   create(@Body() body: CreateMovieDto) {
     return this.movieService.create(body);
   }
 
   @Patch(':id')
+  @RBAC(Role.admin)
   update(@Param('id', ParseIntPipe) id: number, @Body() body: UpdateMovieDto) {
     return this.movieService.update(id, body);
   }
 
   @Delete(':id')
+  @RBAC(Role.admin)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.movieService.remove(id);
   }

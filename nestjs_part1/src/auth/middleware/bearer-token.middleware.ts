@@ -45,7 +45,9 @@ export class BearerTokenMiddleware implements NestMiddleware {
       req.user = payload;
       next();
     } catch (error) {
-      console.error(`MiddleWare 토큰 만료 ${error.toString()}`);
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('토큰이 만료됐습니다.');
+      }
 
       next();
     }
