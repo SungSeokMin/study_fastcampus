@@ -8,6 +8,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MovieDetail } from './entity/movie-detail.entity';
 import { Director } from 'src/director/entity/director.entity';
 import { Genre } from 'src/genre/entity/genre.entity';
+import { GetMoviesDto } from './dto/get-movies.dto';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class MovieService {
@@ -16,14 +18,13 @@ export class MovieService {
     private readonly movieRepository: Repository<Movie>,
     @InjectRepository(MovieDetail)
     private readonly movieDetailRepository: Repository<MovieDetail>,
-    @InjectRepository(Director)
-    private readonly directorRepository: Repository<Director>,
-    @InjectRepository(Genre)
-    private readonly genreRepository: Repository<Genre>,
+    private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
   ) {}
 
-  async findAll(title?: string) {
+  async findAll(dto: GetMoviesDto) {
+    const { title } = dto;
+
     const qb = this.movieRepository
       .createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director', 'director')
@@ -33,7 +34,15 @@ export class MovieService {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    return await qb.getManyAndCount();
+    const { nextCursor } = await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
+
+    const [data, count] = await qb.getManyAndCount();
+
+    return {
+      data,
+      nextCursor,
+      count,
+    };
   }
 
   async findOne(id: number) {

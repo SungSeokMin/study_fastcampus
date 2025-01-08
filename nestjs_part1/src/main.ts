@@ -9,6 +9,9 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true, // 정의하지 않는 요소를 request해도 무시한다.
       forbidNonWhitelisted: true, // 정의하지 않은 요소가 request에 있으면 에러를 발생시킨다.
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 

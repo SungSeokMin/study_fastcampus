@@ -27,6 +27,11 @@ export class Movie extends BaseTableEntity {
   })
   title: string;
 
+  @Column({
+    default: 0,
+  })
+  likeCount: number;
+
   @OneToOne(() => MovieDetail, (movieDetail) => movieDetail.id, { cascade: true, nullable: false })
   @JoinColumn()
   detail: MovieDetail;
