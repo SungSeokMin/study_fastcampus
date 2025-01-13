@@ -14,7 +14,7 @@ export class ResponseTimeInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(() => {
         const respTime = Date.now();
-        const diff = reqTime - respTime;
+        const diff = respTime - reqTime;
 
         console.log(`[${req.method} ${req.path}] ${diff}ms`);
       }),
