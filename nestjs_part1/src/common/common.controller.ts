@@ -26,10 +26,10 @@ export class CommonController {
   )
   createVideo(
     @UploadedFile()
-    movie: Express.Multer.File,
+    video: Express.Multer.File,
   ) {
     return {
-      filename: movie.filename,
+      filename: video.filename,
     };
   }
 }

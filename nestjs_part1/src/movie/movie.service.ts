@@ -50,7 +50,7 @@ export class MovieService {
   async findOne(id: number) {
     const movie = await this.movieRepository.findOne({
       where: { id },
-      relations: ['detail', 'director', 'genres'],
+      relations: ['detail', 'director', 'genres', 'creator'],
     });
 
     if (!movie) {
@@ -60,7 +60,7 @@ export class MovieService {
     return movie;
   }
 
-  async create(createMovieDto: CreateMovieDto, qr: QueryRunner) {
+  async create(createMovieDto: CreateMovieDto, userId: number, qr: QueryRunner) {
     const { title, detail, directorId, genreIds, movieFileName } = createMovieDto;
 
     const director = await qr.manager.findOne(Director, { where: { id: directorId } });
@@ -89,11 +89,6 @@ export class MovieService {
     const movieFolder = join('public', 'movie');
     const tempFolder = join('public', 'temp');
 
-    await rename(
-      join(process.cwd(), tempFolder, movieFileName),
-      join(process.cwd(), movieFolder, movieFileName),
-    );
-
     const movie = await qr.manager
       .createQueryBuilder()
       .insert()
@@ -106,6 +101,9 @@ export class MovieService {
         },
         director,
         movieFilePath: join(movieFolder, movieFileName),
+        creator: {
+          id: userId,
+        },
       })
       .execute();
 
@@ -116,6 +114,11 @@ export class MovieService {
       .relation(Movie, 'genres')
       .of(movieId)
       .add(genres.map((genre) => genre.id));
+
+    await rename(
+      join(process.cwd(), tempFolder, movieFileName),
+      join(process.cwd(), movieFolder, movieFileName),
+    );
 
     return await qr.manager.findOne(Movie, {
       where: { id: movieId },
