@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -19,6 +20,7 @@ import { join } from 'path';
 import { rename } from 'fs/promises';
 import { User } from 'src/user/entity/user.entity';
 import { MovieUserLike } from './entity/movie-user-like.entity';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class MovieService {
@@ -33,6 +35,8 @@ export class MovieService {
     private readonly movieUserLikeRepository: Repository<MovieUserLike>,
     private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async findAll(dto: GetMoviesDto, userId?: number) {
@@ -88,6 +92,26 @@ export class MovieService {
       nextCursor,
       count,
     };
+  }
+
+  async findRecent() {
+    const cacheData = await this.cacheManager.get('MOVIE_RECENT');
+
+    if (cacheData) {
+      return cacheData;
+    }
+
+    const data = await this.movieRepository.find({
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 10,
+    });
+
+    // TTL: 메모리에 존재하는 시간
+    await this.cacheManager.set('MOVIE_RECENT', data);
+
+    return data;
   }
 
   async findOne(id: number) {

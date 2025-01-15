@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role, User } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { envVariablesKeys } from 'src/common/const/env.const';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
   async register(basicToken: string) {
@@ -44,6 +47,20 @@ export class AuthService {
       accessToken: await this.issueToken(user, false),
       refreshToken: await this.issueToken(user, true),
     };
+  }
+
+  async blockToken(token: string) {
+    const payload = this.jwtService.decode(token);
+
+    const expiryDate = +new Date(payload['exp'] * 1000);
+    const now = +Date.now();
+
+    const diff = (expiryDate - now) / 1000;
+    const ttl = Math.max(diff * 1000, 1);
+
+    await this.cacheManager.set(`BLOCK_TOKEN_${token}`, payload, ttl);
+
+    return true;
   }
 
   issueToken(user: { id: number; role: Role }, isRefreshToken: boolean) {

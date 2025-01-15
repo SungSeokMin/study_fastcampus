@@ -1,4 +1,5 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Headers,
@@ -27,6 +28,11 @@ export class AuthController {
   @Post('login')
   loginUser(@Headers(headerVariablesKeys.authorization) basicToken: string) {
     return this.authService.login(basicToken);
+  }
+
+  @Post('token/block')
+  blockToken(@Body('token') token: string) {
+    return this.authService.blockToken(token);
   }
 
   @Post('token/access')
