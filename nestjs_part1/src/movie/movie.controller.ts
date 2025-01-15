@@ -30,8 +30,8 @@ export class MovieController {
 
   @Get()
   @Public()
-  findAll(@Query() dto: GetMoviesDto) {
-    return this.movieService.findAll(dto);
+  findAll(@Query() dto: GetMoviesDto, @UserId() userId?: number) {
+    return this.movieService.findAll(dto, userId);
   }
 
   @Get(':id')
@@ -57,5 +57,15 @@ export class MovieController {
   @RBAC(Role.admin)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.movieService.remove(id);
+  }
+
+  @Post(':id/like')
+  createMovieLike(@Param('id', ParseIntPipe) movieId: number, @UserId() userId: number) {
+    return this.movieService.toggleMovieLike(movieId, userId, true);
+  }
+
+  @Post(':id/dislike')
+  createMovieDislike(@Param('id', ParseIntPipe) movieId: number, @UserId() userId: number) {
+    return this.movieService.toggleMovieLike(movieId, userId, false);
   }
 }
