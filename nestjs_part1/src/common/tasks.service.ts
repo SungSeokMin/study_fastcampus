@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { readdir, unlink } from 'fs/promises';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { join, parse } from 'path';
 import { Movie } from 'src/movie/entity/movie.entity';
 import { Repository } from 'typeorm';
@@ -10,7 +11,18 @@ export class TasksService {
   constructor(
     @InjectRepository(Movie)
     private readonly movieRepository: Repository<Movie>,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
   ) {}
+
+  // @Cron('*/5 * * * * *')
+  log() {
+    this.logger.error('---- Error ----', null, TasksService.name);
+    this.logger.warn('---- Warn ----', TasksService.name);
+    this.logger.log('---- Log ----', TasksService.name);
+    this.logger.debug('---- Debug ----', TasksService.name);
+    this.logger.verbose('---- Verbose ----', TasksService.name);
+  }
 
   // @Cron('* * * * * *')
   async eraseOrphanFiles() {
@@ -46,7 +58,6 @@ export class TasksService {
 
   // @Cron('0 * * * * *')
   async calculateMovieLikeCounts() {
-    console.log('🔥tasks.service: 50줄🔥', 'run');
     await this.movieRepository.query(
       `
       UPDATE movie m
