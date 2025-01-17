@@ -513,3 +513,107 @@ LIMIT 5;
 0초 5분마다 실행 (5분마다 실행, 시 정각에 실행)
 0 */5 * * * *
 ```
+
+## Testing
+
+### 기본 Matcher
+
+- toBe(value): 값이 같은지 확인합니다.
+- toEqual(value): 객체의 모든 값이 같은지 재귀적으로 확인합니다.
+- toBeNull(): null 값을 확인합니다.
+- toBeUndefined(): undefined 값을 확인합니다.
+- toBeDefined(): toBeUndefined()의 반대입니다.
+- toBeTruthy(): JS에서 인지하는 true 값을 반환하는지 확인합니다.
+- toBeFalsy(): JS에서 인지하는 false 값을 반환하는지 확인합니다.
+- toBeNan(): 숫자가 아님을 확인합니다.
+
+### 숫자 Matcher
+
+- toBeGreaterThan(number): 값이 더 큰지 확인합니다.
+- toBeGreaterThanOrEqual(number): 값이 더 크거나 같은지 확인합니다.
+- toBeLessThan(number): 값이 더 작은지 확인합니다.
+- toBeLessThanOrEqual(number): 값이 더 작거나 같은지 확인합니다.
+- toBeCloseTo(number, numDigits?): 특정 소수점까지 같은 값인지 확인합니다.
+
+### 함수 Matcher
+
+실행에 따른 함수
+
+- toHaveBeenCalled(): mock function이 호출되었는지 확인합니다.
+- toHaveBeenCalledTimes(number): mock function이 지정된 횟수만큼 호출되었는지 확인합니다.
+- toHaveBeenCalledWith(arg1, arg2, …): mock function이 특정 파라미터와 함께 호출되었는지 확인합니다.
+- toHaveBeenLastCalledWith(value): mock function이 마지막으로 호출될 때 특정 파라미터와 함께 호출되었는지 확인합니다.
+- toHaveBeenNthCalledWith(nthCall, value): mock function이 n번째로 호출될 때 특정 파라미터와 함께 호출되었는지 확인합니다.
+
+반환에 대한 함수
+
+- toHaveReturned(): mock function이 값을 반환했는지 확인합니다. (에러를 던지지 않음)
+- toHaveReturnedTimes(number): mock function이 값을 지정된 횟수만큼 반환했는지 확인합니다.
+- toHaveReturnedWith(value): mock function이 특정 값을 반환했는지 확인합니다.
+- toHaveLastReturnedWith(value): mock function이 마지막으로 특정 값을 반환했는지 확인합니다.
+- toHaveNthReturnedWith(nthCall, value): mock function이 n번째로 특정 값을 반환했는지 확인합니다.
+
+### 배열 및 객체 Matcher
+
+- toContain(item): 배열 또는 문자열에 특정 항목이 포함되어 있는지 확인합니다.
+- toContainEqual(item): 배열에 구조적으로 같은 항목이 포함되어 있는지 확인합니다.
+- toHaveLength(number): 배열, 문자열 또는 객체의 길이/크기가 특정 값과 일치하는지 확인합니다.
+- toHaveProperty(keyPath, value?): 객체에 특정 경로의 속성이 존재하고, 선택적으로 해당 속성의 값이 특정 값과 일치하는지 확인합니다.
+- toMatchObject(object): 객체가 특정 객체와 부분적으로 일치하는지 확인합니다.
+
+### 에러 Matcher
+
+- toThrow(error?): 함수가 호출될 때 특정 오류를 던지는지 확인합니다.
+
+### 기타 Matcher
+
+- toStrictEqual(value): 객체가 구조적으로 완벽히 동일한지 확인합니다. (프로토타입 및 비열거형 속성 포함)
+- toBeInstanceOf(Class): 값이 특정 클래스의 인스턴스인지 확인합니다.
+- toMatch(regexp | string): 문자열이 정규 표현식 또는 문자열과 일치하는지 확인합니다.
+- expect.anything(): 아무 값이나 허용하지만 null이나 undefined는 제외한다.
+- expect.any(constructor): 특정 생성자의 인스턴스인지 확인합니다.
+- expect.arrayContaining(array): 입력된 array가 비교 대상 array의 subset인지 확인합니다. (전부 포함하는지)
+- expect.objectContaining(object): 입력된 객체가 비교 대상 객체의 subset인지 확인합니다. (전부 포함하는지)
+- expect.stringContaining(string): 특정 문자열이 포함 돼있는지 확인합니다.
+
+## Mock / Stub / Fake
+
+테스트할때 의존성을 해결하는 방법은 다양하게 존재합니다. 모든 의존성을 그대로 사용하는 테스트도 존재하지만 그런 테스트는 너무 무겁고 오래 걸리므로, 일반적으로 의존성을 각자 객체로 스왑 후 사용합니다.
+
+![Testing](https://github.com/user-attachments/assets/42efd065-b9e4-48f8-b279-0ac6bad3c2d9)
+
+- Mock: 상호작용을 검증하는 객체입니다.
+- Stub: 함수나 객체의 간소화된 버전으로 미리 정의된 값을 반환합니다.
+- Fake: 실제 객체를 간소하게 구현한 형태로, 복잡한 실제 객체의 작동 방식을 최소화하여 구현한 형태입니다. 실제 객체는 무겁지만 Stub 보다는 현설적인 작동이 필요할때 많이 사용됩니다.
+
+`의존성 해결을 해주는 객체가 셋중 꼭 어느 하나에 속한다고 생각할 필요는 없습니다. 명칭은 위와 같이 정의하지만 일반적으론 일괄적으로 Mock이라고 부릅니다.`
+
+## Mock Function 구현
+
+- mockFn.mockImplementation(fn): mock function의 구현체를 변경합니다. (실행할 함수)
+- mockFn.mockImplementationOnce(fn): mockImplementation을 단 한번만 실행합니다. 여러번 chaining 가능하다.
+
+---
+
+- mockFn.mockReturnThis(): mock function이 호출될 때마다 this를 반환하도록 설정합니다.
+
+---
+
+- mockFn.mockReturnValue(value): mock function이 호출될 때마다 특정 값을 반환하도록 설정합니다.
+- mockFn.mockReturnValueOnce(value): mockReturnValue를 단 한번만 실행합니다. 여러번 chaining 가능하다.
+
+---
+
+- mockFn.mockResolvedValue(value): mock function이 호출될 때 Promise가 특정 값으로 Resolve 되도록 합니다.
+- mockFn.mockResolvedValueOnce(value): mockResolvedValue를 단 한번만 실행합니다. 여러번 chaining 가능하다.
+
+---
+
+- mockFn.mockRejectedValue(value): mock function이 호출될 때 Promise가 특정 값으로 Reject 되도록 설정합니다.
+- mockFn.mockRejectedValueOnce(value): mock function의 다음 한 번의 호출에 대해 프로미스가 특정 값으로 거부되도록 설정합니다.
+
+---
+
+- mockFn.mockClear(): mock function의 호출 기록과 반환 값들을 지웁니다 (상태 초기화).
+- mockFn.mockReset(): mockClear()의 기능을 모두 실행하고 mock 함수를 빈 함수로 대체합니다.
+- mockFn.mockRestore(): mockReset()의 작업을 모두 진행하고 mock 함수를 원래 구현체로 복원합니다
