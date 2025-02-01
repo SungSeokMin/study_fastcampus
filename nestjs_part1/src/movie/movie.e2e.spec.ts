@@ -10,6 +10,7 @@ import { DataSource } from 'typeorm';
 import { MovieDetail } from './entity/movie-detail.entity';
 import { MovieUserLike } from './entity/movie-user-like.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { CommonService } from 'src/common/common.service';
 
 describe('MovieController (e2e)', () => {
   let app: INestApplication;
@@ -26,6 +27,7 @@ describe('MovieController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
+      providers: [CommonService],
     }).compile();
 
     app = moduleFixture.createNestApplication();
