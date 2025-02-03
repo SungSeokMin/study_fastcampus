@@ -10,6 +10,6 @@ import { UserModule } from 'src/user/user.module';
   imports: [TypeOrmModule.forFeature([User]), JwtModule.register({}), UserModule],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [JwtModule],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
